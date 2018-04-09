@@ -1,15 +1,9 @@
 from Tkinter import *
-import Tkinter
-import ttk
-import cv2
-import PIL
-import os
-import glob
+import Tkinter, ttk, cv2, PIL, os, glob, argparse, math
 import numpy as np
-import argparse
 from PIL import ImageTk, Image
 
-Dataset_root="./MET Data Set"
+Dataset_root="./Image Data Set"
 
 def get_filename(fulllocation):
     i=1
@@ -37,47 +31,35 @@ def explore_dir(dir,count=0):
             filenames=np.concatenate((filenames, name), axis=0)
     return np.array([filenames,filelocations])
 
-class ResizingCanvas(Canvas):
-    def __init__(self,parent,**kwargs):
-        Canvas.__init__(self,parent,**kwargs)
-        self.bind("<Configure>", self.on_resize)
-        self.height = self.winfo_reqheight()
-        self.width = self.winfo_reqwidth()
-
-    def on_resize(self,event):
-        wscale = float(event.width)/self.width
-        hscale = float(event.height)/self.height
-        self.width = event.width
-        self.height = event.height
-        self.config(width=self.width, height=self.height)
-        self.scale("all",0,0,wscale,hscale)
-
 def create_canvas(name):
-	dataset=explore_dir(Dataset_root,0)
-	myshare=[["" for cols in range(20)]for rows in range(2)]
-	max_size=np.array([0,0])
+	share = 120
+	#coount = 0
 
-	count=0
+	dataset=explore_dir(Dataset_root,0)
+	myshare=[["" for cols in range(share)]for rows in range(2)]
+	max_size=np.array([0,0])
 
 	if name=="jsw": count = 1
 	elif name=="ksy": count = 2
 	elif name=="jwj": count = 3
-	elif name=="pyj": count = 4
+	elif name=="pjy": count = 4
 	elif name=="yyg": count = 5
 	elif name=="pbr": count = 6
 	elif name=="cej": count = 7
-	elif name=="hjh": count = 8
+	elif name=="cyj": count = 8
+	elif name=="hjh": count = 9
 
-	start = (count * 20)- 20
-	end = (count * 20) - 1
+	start = (count * share) - share
+	end = (count * share) - 1
 
 	print start,end
 
 	for i in range(2):
-		for j in range(20):
+		for j in range(share):
 			myshare[i][j]=dataset[i][j+start]
-	for i in range(20):
+	for i in range(share):
 		testimg=cv2.imread(myshare[1][i])
+		if testimg is None: continue
 		if testimg.shape[0]>max_size[0]: max_size[0]=testimg.shape[0]
 		if testimg.shape[1]>max_size[1]: max_size[1]=testimg.shape[1]
 
@@ -89,25 +71,31 @@ def create_canvas(name):
 	canvasframe=Frame(root)
 	clearbuttonframe=Frame(root)
 
- 	buttonframe.pack(ipadx=0,ipady=0,side="left")
- 	canvasframe.pack(ipadx=0,ipady=0,side="left")
+ 	buttonframe.pack(ipadx=0,ipady=0,side="top")
 
  	coor=StringVar(root,value='')
  	coor_entry=ttk.Entry(root,textvariable=coor,width=20)
- 	coor_entry.pack(side="left")
+ 	coor_entry.pack(side="top")
 
+ 	full_path=StringVar(root,value='')
+ 	filefullpath=ttk.Entry(root,textvariable=full_path,width=80)
+ 	filefullpath.pack(side="top")
+
+ 	canvasframe.pack(ipadx=0,ipady=0,side="top")
 	canvas = Canvas(canvasframe,width=max_size[1],heigh=max_size[0])
 	canvas.pack()
 
 	def imgimg(canvas,imgimg_name):
 		canvas.delete("all")
 		img1=cv2.imread(imgimg_name)
+
 		HEIGHT,WIDTH = img1.shape[:-1]
 		canvas = Canvas(canvas,width=WIDTH,heigh=HEIGHT)
 		canvas.place(x=0,y=0)
 		img2=ImageTk.PhotoImage(file=imgimg_name)
 		canvas.create_image(0,0,image=img2,anchor="nw")
-
+		filefullpath.delete(0,"end")
+		filefullpath.insert("end",imgimg_name)
 		def down(event):
 		  global x0,y0;
 		  x0, y0 = event.x, event.y
@@ -123,27 +111,15 @@ def create_canvas(name):
 		canvas.bind("<Button-1>",down) 
 		canvas.bind("<ButtonRelease>",up) 
 		root.mainloop()
+	buttonlist=list()
+	for i in range(share):
+		buttonlist.append(Button(buttonframe, text=myshare[0][i],command=lambda i=i: imgimg(canvas,myshare[1][i])))
 
-	b_1=Button(buttonframe,text=myshare[0][0],command= lambda: imgimg(canvas,myshare[1][0])).pack(side="bottom",anchor="nw")
-	b_2=Button(buttonframe,text=myshare[0][1],command= lambda: imgimg(canvas,myshare[1][1])).pack(side="bottom",anchor="nw")
-	b_3=Button(buttonframe,text=myshare[0][2],command= lambda: imgimg(canvas,myshare[1][2])).pack(side="bottom",anchor="nw")
-	b_4=Button(buttonframe,text=myshare[0][3],command= lambda: imgimg(canvas,myshare[1][3])).pack(side="bottom",anchor="nw")
-	b_5=Button(buttonframe,text=myshare[0][4],command= lambda: imgimg(canvas,myshare[1][4])).pack(side="bottom",anchor="nw")
-	b_6=Button(buttonframe,text=myshare[0][5],command= lambda: imgimg(canvas,myshare[1][5])).pack(side="bottom",anchor="nw")
-	b_7=Button(buttonframe,text=myshare[0][6],command= lambda: imgimg(canvas,myshare[1][6])).pack(side="bottom",anchor="nw")
-	b_8=Button(buttonframe,text=myshare[0][7],command= lambda: imgimg(canvas,myshare[1][7])).pack(side="bottom",anchor="nw")
-	b_9=Button(buttonframe,text=myshare[0][8],command= lambda: imgimg(canvas,myshare[1][8])).pack(side="bottom",anchor="nw")
-	b_10=Button(buttonframe,text=myshare[0][9],command= lambda: imgimg(canvas,myshare[1][9])).pack(side="bottom",anchor="nw")
-	b_11=Button(buttonframe,text=myshare[0][10],command= lambda: imgimg(canvas,myshare[1][10])).pack(side="bottom",anchor="nw")
-	b_12=Button(buttonframe,text=myshare[0][11],command= lambda: imgimg(canvas,myshare[1][11])).pack(side="bottom",anchor="nw")
-	b_13=Button(buttonframe,text=myshare[0][12],command= lambda: imgimg(canvas,myshare[1][12])).pack(side="bottom",anchor="nw")
-	b_14=Button(buttonframe,text=myshare[0][13],command= lambda: imgimg(canvas,myshare[1][13])).pack(side="bottom",anchor="nw")
-	b_15=Button(buttonframe,text=myshare[0][14],command= lambda: imgimg(canvas,myshare[1][14])).pack(side="bottom",anchor="nw")
-	b_16=Button(buttonframe,text=myshare[0][15],command= lambda: imgimg(canvas,myshare[1][15])).pack(side="bottom",anchor="nw")
-	b_17=Button(buttonframe,text=myshare[0][16],command= lambda: imgimg(canvas,myshare[1][16])).pack(side="bottom",anchor="nw")
-	b_18=Button(buttonframe,text=myshare[0][17],command= lambda: imgimg(canvas,myshare[1][17])).pack(side="bottom",anchor="nw")
-	b_19=Button(buttonframe,text=myshare[0][18],command= lambda: imgimg(canvas,myshare[1][18])).pack(side="bottom",anchor="nw")
-	b_20=Button(buttonframe,text=myshare[0][19],command= lambda: imgimg(canvas,myshare[1][19])).pack(side="bottom",anchor="nw")
+	count_num=0
+	for row in range(int(math.ceil(share/20))):
+		for col in range(20):
+			buttonlist[count_num].grid(column=col, row=row)
+			count_num+=1
 
 	root.mainloop()
 
