@@ -105,6 +105,7 @@ def create_canvas(name):
 		canvas.create_image(0,0,image=img,anchor="nw")
 		filefullpath.delete(0,"end")
 		filefullpath.insert("end",imgimg_name)
+		coor_entry.delete(0,"end")
 
 		def down(event):
 			global x0,y0;
@@ -120,7 +121,6 @@ def create_canvas(name):
 			if resized : 
 				x0*=OLD_W/NEW_W
 				y0*=OLD_H/NEW_H
-			#coor_entry.delete(0,"end")
 			coor_entry.insert("end",str(int(x0))+","+str(int(y0))+",")
 			print ("("+str(int(x0))+","+str(int(y0))+")")
 
