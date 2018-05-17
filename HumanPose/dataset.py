@@ -12,8 +12,9 @@ class met:
         self.re_img_size=re_img_size
         self.img_path=list(path for path in joints[:,0])
         self.joint_coors=list(coors for coors in joints[:,1:29])
-        self.joint_is_valid=list(is_valid for is_valid in joints[:,29:43])
-        self.labels=np.array(list(is_valid for is_valid in joints[:,43:]))
+        self.joint_is_valid=np.array(list(is_valid for is_valid in joints[:,29:43]))
+        self.labels=np.array(list(labels for labels in joints[:,43]))[:,np.newaxis]
+        #self.scores=np.array(list(scores for scores in joints[:,44]))
         
         self.img_set=np.zeros([len(self.img_path),re_img_size[0],re_img_size[1],3])
         self.coor_set=np.array(self.joint_coors).reshape(len(self.joint_coors),14,2)
@@ -30,7 +31,7 @@ class met:
                     if self.coor_set[i][j][0] == -1: pass
                     else:
                             self.coor_set[i][j][0] = self.coor_set[i][j][0]*(re_img_size[0]/img.shape[1])
-                            self.coor_set[i][j][1]=self.coor_set[i][j][1]*(re_img_size[1]/img.shape[0])
+                            self.coor_set[i][j][1] = self.coor_set[i][j][1]*(re_img_size[1]/img.shape[0])
                 pbar_process.update(1)
  
         if Rotate :
@@ -112,14 +113,7 @@ class met:
         shuffled_valid = np.zeros([len(joint_is_valid),14])
         shuffled_labels = np.zeros([labels.shape[0],1])
 
-        indices=list(range(len(images)))
-        np.random.shuffle(indices)
-
-        """
-        for i, idx in enumerate(indices):
-            shuffled_img[i] = images[idx]
-            shuffled_coor[i] = joints[idx]
-            shuffled_valid[i] = joint_is_valid[idx]
-            shuffled_labels[i] = labels[idx]
-        """    
+        indices=np.random.permutation(len(shuffled_img))
+        shuffled_img, shuffled_coor, shuffled_valid, shuffled_labels = images[indices], joints[indices], labels[indices], joint_is_valid[indices]
+        
         return {'images': shuffled_img,'joints':shuffled_coor,'valid':shuffled_valid,'labels':shuffled_labels}
