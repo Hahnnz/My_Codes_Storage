@@ -77,11 +77,12 @@ class met:
                     rotated_coor_list = list((lambda x : (x[0]*np.cos(theta) + x[1]*np.sin(theta) + rotated_center[0],
                                                           -x[0]*np.sin(theta) + x[1]*np.cos(theta) + rotated_center[1])
                                              )(coor) for coor in coor_list)
-
+                    
+                    rotated_orig= img_rotated.shape[:2]
                     img_rotated = skimage.transform.resize(img_rotated, (self.re_img_size[0],self.re_img_size[1],3), mode='reflect')
 
                     rotated_img[(i*len(thetas))+j]=img_rotated
-                    rotated_coor[(i*len(thetas))+j]=np.array(rotated_coor_list)*(self.re_img_size[0]/img_rotated.shape[0])
+                    rotated_coor[(i*len(thetas))+j]=np.array(rotated_coor_list)*(self.re_img_size[0]/rotated_orig[0])
                     rotated_labels[(i*len(thetas))+j] = labels[i]
                     pbar.update(1)
         
@@ -102,8 +103,9 @@ class met:
                     mirrored_coor[i][j][1] = joint[1]
                     if joint[0] > (img.shape[0]/2):
                         mirrored_coor[i][j][0] = (lambda x : x-2*(x-(img.shape[0]/2)))(joint[0])
-                    else:
+                    elif joint[0] > (img.shape[0]/2):
                         mirrored_coor[i][j][0] = (lambda x : x+2*((img.shape[0]/2)-x))(joint[0])
+                    elif joint[0] == -1: pass
                 pbar.update(1)
         return {'images':mirrored_img,'joints':mirrored_coor,'valid':joint_is_valid,'labels':copy.copy(labels)}
     
