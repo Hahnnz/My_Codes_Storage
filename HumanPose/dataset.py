@@ -1,14 +1,9 @@
-import numpy as np
+impimport numpy as np
 import pandas as pd
-import scipy, glob, os, copy, cv2
+import skimage, scipy, glob, os, copy
+from skimage import io, transform
 from scipy.io import loadmat
 from tqdm import tqdm
-
-import tensorflow as tf
-from scripts import dataset
-from tensorflow.contrib.data import Iterator
-from tensorflow.python.framework import dtypes
-from tensorflow.python.framework.ops import convert_to_tensor
 
 def one_hot_encoding(labels):
     return np.eye(np.max(labels) + 1)[labels].reshape(labels.shape[0],np.max(labels) + 1)
@@ -40,8 +35,8 @@ class met:
         with tqdm(total=len(self.img_path)) as pbar_process:
             pbar_process.set_description("[Processing Images & Coordinates]")
             for i, path in enumerate(self.img_path):
-                img=cv2.imread(path)
-                self.img_set[i]=cv2.resize(img,(re_img_size[0],re_img_size[1]), interpolation=cv2.INTER_CUBIC)
+                img=skimage.io.imread(path)
+                self.img_set[i]=skimage.transform.resize(img,(re_img_size[0],re_img_size[1],3),mode='reflect')
 
                 for j in range(len(self.coor_set[i])):
                     if is_valid and bool(self.joint_is_valid[i][j]): self.coor_set[i][j] = [-1,-1]
@@ -201,28 +196,3 @@ class met:
     
     def _head_basis(self, coord):
         return coord[:14]/coord[13]
-    
-class iterator:
-    def __init__(self, csv_file, batch_size, mode, Rotate=False, Fliplr=False, Shuffle=False):
-        if not mode.lower() in {"classification", "regression", "all"}:
-            raise ValueError("mode must be given 'classification', 'regression' or 'all'.")
-        
-        data = met(csv_file,Rotate=Rotate,Fliplr=Fliplr,Shuffle=Shuffle)
-        
-        # True : Classification mode
-        # False : Regression mode
-        self._mode = True if mode.lower()=="classification" else False
-        self.batch_size = batch_size
-        self.num_classes = max(data.labels)[0]+1
-        
-        self.img_set = convert_to_tensor(data.img_set, dtype=dtypes.float64)
-        if self._mode:
-            self.labels = convert_to_tensor(data.labels[:,0], dtype= dtypes.int32)
-        elif not self._mode:
-            self.coor_set = convert_to_tensor(data.coor_set.reshape(len(data.coor_set), -1), dtype = dtypes.float64) 
-
-        data = tf.data.Dataset.from_tensor_slices((self.img_set, tf.one_hot(self.labels, self.num_classes) if self._mode else self.coor_set))
-        data = data.batch(self.batch_size)
-
-        self.iterator = Iterator.from_structure(data.output_types, data.output_shapes)
-        self.init_op = self.iterator.make_initializer(data)
