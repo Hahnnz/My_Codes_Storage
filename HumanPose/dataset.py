@@ -1,4 +1,4 @@
-impimport numpy as np
+import numpy as np
 import pandas as pd
 import skimage, scipy, glob, os, copy
 from skimage import io, transform
