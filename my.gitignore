@@ -7,5 +7,6 @@
 .vscode
 .DS_Store
 .ipynb_checkpoints
+*.out
 checkpoint
 __pycache__
