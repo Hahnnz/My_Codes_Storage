@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import scipy, glob, os, copy, cv2
+import scipy, copy, cv2
 from tqdm import tqdm
 
 # one hot encoding
@@ -175,7 +175,7 @@ class met:
                     mirrored_coor[i][j][1] = joint[1]
                     if joint[0] > (img.shape[0]/2):
                         mirrored_coor[i][j][0] = (lambda x : x-2*(x-(img.shape[0]/2)))(joint[0])
-                    elif joint[0] < (img.shape[0]/2):
+                    elif joint[0] > (img.shape[0]/2):
                         mirrored_coor[i][j][0] = (lambda x : x+2*((img.shape[0]/2)-x))(joint[0])
                     elif joint[0] == -1: pass
                 pbar.update(1)
