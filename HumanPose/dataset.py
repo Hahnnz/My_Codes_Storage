@@ -43,7 +43,7 @@ class met:
         self.re_img_size=re_img_size
         self.img_path=list(path for path in joints[:,0])
         self.joint_coors=np.array(list(coors for coors in joints[:,1:29]))
-        self.joint_is_valid=np.array(list(is_valid for is_valid in joints[:,29:43])) 
+        self.joint_is_valid=np.array(list(valid for valid in joints[:,29:43])) 
         self.scores=np.array(list(scores for scores in joints[:,43]))[:,np.newaxis]  # MET Score
         self.labels=np.array(list(labels for labels in joints[:,44]))[:,np.newaxis]  # Activities
         
@@ -54,14 +54,6 @@ class met:
         
         # Get each joints coordinates mean value
         self.means = self._get_coor_means(csv_file,self.coor_set,np.max(self.labels)+1)
-        
-        # fill missing or -1 value to each joints mean values
-        for i, coors in enumerate(self.coor_set):
-            if list(coors.reshape(-1)).count(-1) > 0 :
-                label = (joints[i][-1])
-                for j in range(len(coors)):
-                    if coors[j,0]==-1:
-                        self.coor_set[i,j] = self.means[label,j]
         
         # Load images & coords with Augmentations
         with tqdm(total=len(self.img_path)) as pbar_process:
@@ -78,6 +70,14 @@ class met:
                             self.coor_set[i][j][0] = self.coor_set[i][j][0]*(re_img_size[0]/img.shape[1])
                             self.coor_set[i][j][1] = self.coor_set[i][j][1]*(re_img_size[1]/img.shape[0])
                 pbar_process.update(1)
+                
+        # fill missing or -1 value to each joints mean values
+        for i, coors in enumerate(self.coor_set):
+            if list(coors.reshape(-1)).count(-1) > 0 :
+                label = (joints[i][-1])
+                for j in range(len(coors)):
+                    if coors[j,0]==-1:
+                        self.coor_set[i,j] = self.means[label,j]
         
         # Rotate images and coords if 'Rotate' is True
         if Rotate :
@@ -175,7 +175,7 @@ class met:
                     mirrored_coor[i][j][1] = joint[1]
                     if joint[0] > (img.shape[0]/2):
                         mirrored_coor[i][j][0] = (lambda x : x-2*(x-(img.shape[0]/2)))(joint[0])
-                    elif joint[0] > (img.shape[0]/2):
+                    elif joint[0] < (img.shape[0]/2):
                         mirrored_coor[i][j][0] = (lambda x : x+2*((img.shape[0]/2)-x))(joint[0])
                     elif joint[0] == -1: pass
                 pbar.update(1)
