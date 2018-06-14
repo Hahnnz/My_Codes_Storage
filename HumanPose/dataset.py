@@ -15,7 +15,7 @@ class met:
         Arguments
             csv_file : insert met csv file (No Default)
             re_img_size : insert image size you want to resize (Default : 227,227)
-            is_valid : make unseen coordinates (but has value) get activated (Default : False)
+            is_valid : make unseen coordinates (but have values) get activated (Default : False)
             Rotate : rotate images and coordinates (Default : False)
             Fliplr : mirror images and coordinates (Default : False)
             Shuffle : Shuffle dataset and labels before return (Default : False)
