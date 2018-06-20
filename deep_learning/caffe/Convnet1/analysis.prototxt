@@ -1,8 +1,4 @@
-
-
-name: "LUngNoduleAnalysis_project_CNN-version"
-
-
+name: "CNN-example"
 #------------------------Train Data---------------------------#
 layer{
 	name: "data"
