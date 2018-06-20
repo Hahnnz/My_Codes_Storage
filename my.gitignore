@@ -10,3 +10,5 @@
 *.out
 checkpoint
 __pycache__
+*.swp
+*.swo
