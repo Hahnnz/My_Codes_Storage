@@ -11,7 +11,7 @@ def RoI_OHE(roi_mask,Class):
         one hot encoded roi mask
     """
     if Class.lower() == "benign": Class = tf.constant([0,1,0])
-    elif Class.lower() == "benign": Class = tf.constant([0,0,1])
+    elif Class.lower() == "malignant": Class = tf.constant([0,0,1])
     else : raise ValueError("Class should 'Benign' or 'Malignant'.")
     
     one_hot_roi = None
