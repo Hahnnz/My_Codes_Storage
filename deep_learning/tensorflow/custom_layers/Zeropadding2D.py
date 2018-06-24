@@ -1,6 +1,21 @@
 import tensorflow as tf
 
 def ZeroPadding2D(data,psize,Type="CONSTANT",name=None):
+    """
+    Description
+        add padding 0 on 3 channeled image
+        ex : (200,200,3) - > (202,202,3)
+        
+    Arguments
+        - data : images to pad 
+        - psize : pad size
+        - Type : padding type (default : CONSTANT)
+        - name : set this layer name (default : None)
+    
+    Output
+        padded images
+    """
+    
     data_shape=data.get_shape().as_list()
     if data_shape[0]==None :
         raise ValueError("batch_size must be specified.")
