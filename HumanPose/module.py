@@ -1,98 +1,36 @@
-import tkinter, PIL, os, glob, argparse, math
+import tkinter, PIL, os, glob, math
 import numpy as np
 from PIL import ImageTk, Image
 from tkinter import ttk
 
-Dataset_root="./Image Data Set"
+Dataset_root="./image"
 
-def get_filename(fulllocation):
-    i=1
-    while True:
-        if fulllocation[-i] is not "/":i += 1
-        else:
-            name=fulllocation[-(i-1):]
-            break
-    return name
-
-def explore_dir(dir,count=0):
+def explore_dir(dir,count=0,f_extensions=None):
     if count==0:
         global n_dir, n_file, filenames, filelocations
         n_dir=n_file=0
-        filenames=filelocations=np.array([])
-    for img_path in sorted(glob.glob(os.path.join(dir,'*'))):
+        filenames=list()
+        filelocations=list()
+
+    for img_path in sorted(glob.glob(os.path.join(dir,'*' if f_extensions is None else '*.'+f_extensions))):
         if os.path.isdir(img_path):
             n_dir +=1
             explore_dir(img_path,count+1)
         elif os.path.isfile(img_path):
             n_file += 1
-            loc=np.array([img_path])
-            name=np.array([get_filename(img_path)])
-            filelocations=np.concatenate((filelocations, loc), axis=0)
-            filenames=np.concatenate((filenames, name), axis=0)
-    return np.array([filenames,filelocations])
+            filelocations.append(img_path)
+            filenames.append(img_path.split("/")[-1])
+    return np.array((filenames,filelocations))
 
-def create_canvas(name):
-	share = 120
+def create_canvas():
 
-	dataset=explore_dir(Dataset_root,0)
-	myshare=[["" for cols in range(share)]for rows in range(2)]
-	max_size=np.array([0,0])
-
-	if name=="jsw": count = 1
-	elif name=="ksy": count = 2
-	elif name=="jwj": count = 3
-	elif name=="pjy": count = 4
-	elif name=="yyg": count = 5
-	elif name=="pbr": count = 6
-	elif name=="cej": count = 7
-	elif name=="cyj": count = 8
-	elif name=="hjh": count = 9
-
-	start = (count * share) - share
-	end = (count * share) - 1
-
-	print(start,end)
-
-	for i in range(2):
-		for j in range(share):
-			myshare[i][j]=dataset[i][j+start]
-	for i in range(share):
-		img = Image.open(myshare[1][i])
-		[WIDTH, HEIGHT] = img.size
-		if img is None: continue
-		if img.size[0]>max_size[0]: max_size[0]=img.size[0]
-		if img.size[1]>max_size[1]: max_size[1]=img.size[1]
-
-
-
-	root = tkinter.Tk()
-
-	buttonframe=tkinter.Frame(root)
-	canvasframe=tkinter.Frame(root)
-	clearbuttonframe=tkinter.Frame(root)
-
-	buttonframe.pack(ipadx=0, ipady=0, side="top")
-
-	coor=tkinter.StringVar(root,value='')
-	coor_entry=ttk.Entry(root,textvariable=coor,width=100)
-	coor_entry.pack(side="top")
-
-	full_path=tkinter.StringVar(root,value='')
-	filefullpath=ttk.Entry(root,textvariable=full_path,width=80)
-	filefullpath.pack(side="top")
-
-	canvasframe.pack(ipadx=0,ipady=0,side="top")
-	canvas = tkinter.Canvas(canvasframe,width=max_size[1],heigh=max_size[0])
-	canvas.pack()
-
-	def imgimg(canvas,imgimg_name):
+	def joint_pointing_canvas(canvas,imgimg_name):
 		canvas.delete("all")
 		resized=False
 
 		img = Image.open(imgimg_name)
 		OLD_W, OLD_H = img.size
-		NEW_W, NEW_H = 800, 750
-		print(img.size , OLD_W/NEW_W, OLD_H/OLD_H)
+		NEW_W, NEW_H = 800, 600
 
 		if OLD_W>NEW_W or OLD_H>NEW_H: 
 			img = img.resize((NEW_W, NEW_H), Image.ANTIALIAS)
@@ -110,41 +48,80 @@ def create_canvas(name):
 		def down(event):
 			global x0,y0;
 			x0, y0 = event.x, event.y	  
-
 			if(x0,y0) == (event.x,event.y):
 				canvas.create_oval(x0-2,y0-2,event.x+2,event.y+2,outline="red",fill="red",width=2)
 		def up(event):
 			global x0, y0
 			if(x0,y0) == (event.x,event.y):
 				canvas.create_oval(x0-2,y0-2,event.x+2,event.y+2,outline="red",fill="red",width=2)
-
 			if resized : 
 				x0*=OLD_W/NEW_W
 				y0*=OLD_H/NEW_H
 			coor_entry.insert("end",str(int(x0))+","+str(int(y0))+",")
-			print ("("+str(int(x0))+","+str(int(y0))+")")
 
 		canvas.bind("<Button-1>",down) 
 		canvas.bind("<ButtonRelease>",up) 
 		root.mainloop()
-	buttonlist=list()
-	for i in range(share):
-		buttonlist.append(tkinter.Button(buttonframe, text=myshare[0][i],command=lambda i=i: imgimg(canvas,myshare[1][i])))
 
-	count_num=0
-	for row in range(int(math.ceil(share/20))):
-		for col in range(20):
-			buttonlist[count_num].grid(column=col, row=row)
-			count_num+=1
+	def create_button(class_name,cur_class):
+		class_name.config(text="Current Class : "+cur_class, font='Helvetica 18 bold')
+		for i in range(len(img_paths_with_class[classes.index(cur_class)])):
+			tkinter.Button(img_button_frame, text=img_paths_with_class[classes.index(cur_class)][i].split("/")[-1], width=5,
+				command=lambda i=i: joint_pointing_canvas(canvas,img_paths_with_class[classes.index(cur_class)][i])).grid(column=int(i/6),row=int(i%6))
+
+	dataset=explore_dir(Dataset_root,0)
+	img_paths = dataset[1]
+	classes=sorted(set(img_paths[i].split("/")[-2] for i in range(len(img_paths))))
+	img_paths_with_class=list([list() for _ in range(len(set(img_paths)))])
+	
+	for i, Class in enumerate(classes):
+	    for path in img_paths:
+	        if Class in path.split("/")[-2] : img_paths_with_class[i].append(path)
+
+	max_size=np.array([0,0])
+
+	root = tkinter.Tk()
+	root.title("Human Joint Point [Version 3]")
+
+	img_button_frame=tkinter.Frame(root)
+	canvasframe=tkinter.Frame(root)
+	option_button_frame=tkinter.Frame(root)
+	class_button_frame=tkinter.Frame(root)
+	cur_class_frame=tkinter.Frame(root)
+
+	class_button_frame.pack(ipadx=0, ipady=0, side="left")
+	option_button_frame.pack(ipadx=0, ipady=0, side="left")
+	img_button_frame.pack(ipadx=0, ipady=0, side="top")
+	cur_class_frame.pack(ipadx=0, ipady=0, side="top")
+	tkinter.Label(class_button_frame,text="Classes", font='Helvetica 18 bold').pack()
+
+	cur_class_name = tkinter.Label(cur_class_frame)
+	cur_class_name.pack()
+	coor=tkinter.StringVar(root,value='')
+	coor_entry=ttk.Entry(root,textvariable=coor,width=100)
+	coor_entry.pack(side="top")
+
+	full_path=tkinter.StringVar(root,value='')
+	filefullpath=ttk.Entry(root,textvariable=full_path,width=80)
+	filefullpath.pack(side="top")
+
+	canvasframe.pack(ipadx=0,ipady=0,side="top")
+	canvas = tkinter.Canvas(canvasframe,width=800,heigh=600)
+	canvas.pack()
+
+	for i, name in enumerate(classes):
+		tkinter.Button(class_button_frame, text=name, width=15, command=lambda i=i: create_button(cur_class_name,classes[i])).pack()
+
+	tkinter.Button(option_button_frame, text="Absence", width=7, command=lambda : coor_entry.insert("end","-1,-1,")).pack()
+	tkinter.Button(option_button_frame, text="Visible", width=7, command=lambda : coor_entry.insert("end","0,")).pack()
+	tkinter.Button(option_button_frame, text="Unvisible", width=7, command=lambda : coor_entry.insert("end","1,")).pack()
+
+	copyright_frame=tkinter.Frame(root)
+	copyright_frame.pack(side="bottom")
+	tkinter.Label(copyright_frame,
+	 text="⊙ Copyrightⓒ2018 by Hahnnz, Brain Information Laboratory @ Incheon National University(INU). All rights reserved.").pack()
 
 	root.mainloop()
 
-def get_yourname():
-	parser = argparse.ArgumentParser()
-	parser.add_argument("name",type=str,help="insert your name.")
-	return parser.parse_args().name
-
 if __name__ == '__main__':
-	create_canvas(get_yourname())
-
-	#open_window(3,"init")
+	create_canvas()
