@@ -29,6 +29,18 @@ def create_canvas():
 		resized=False
 
 		img = Image.open(imgimg_name)
+		if hasattr(img, '_getexif'):
+		    orientation = 0x0112
+		    exif = img._getexif()
+		    if exif is not None:
+		        orientation = exif[orientation]
+		        rotations = {
+		            3: Image.ROTATE_180,
+		            6: Image.ROTATE_270,
+		            8: Image.ROTATE_90
+		        }
+		        if orientation in rotations:
+		            img = img.transpose(rotations[orientation])
 		OLD_W, OLD_H = img.size
 		NEW_W, NEW_H = 800, 600
 
@@ -124,4 +136,4 @@ def create_canvas():
 	root.mainloop()
 
 if __name__ == '__main__':
-	create_canvas()
+    create_canvas()
