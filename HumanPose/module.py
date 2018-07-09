@@ -29,7 +29,7 @@ def create_canvas():
 		resized=False
 
 		img = Image.open(imgimg_name)
-		if hasattr(img, '_getexif'):
+		if hasattr(img, '_getexif') and 'jpeg' in imgimg_name:
 		    orientation = 0x0112
 		    exif = img._getexif()
 		    if exif is not None:
