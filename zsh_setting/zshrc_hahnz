@@ -98,6 +98,10 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 source /home/USERNAME/install/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
 export PYTHONPATH=/usr/local:$PYTHONPATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export PYTHONPATH=$PYTHONPATH:/home/USERNAME/caffe2/build
