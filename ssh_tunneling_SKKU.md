@@ -1,4 +1,4 @@
-# SSH terminaling for SKKU-HPC Servers
+# SSH Tunneling for SKKU-HPC Servers
 
 ## Client [My PC]
 
