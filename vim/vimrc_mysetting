@@ -1,0 +1,81 @@
+"vim runtime configuration file
+"set nu
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+call vundle#end()
+
+set ai cindent
+set ts=4 sw=4 tw=0
+syntax enable
+"colo delek
+set fencs=utf-8,korea
+
+ab mymail	jskoream@empas.com
+ia time0	<C-R>=strftime(%Y.%m.%d-%H:%M:%S")<CR>
+
+nmap <F2>	:up<CR>
+nmap <F3>	:e.<CR>
+nmap <C-L>	<ESC>q/
+imap <C-D>	<C-R>=strftime("%Y.%m.%d-%H:%M:%S")<CR>
+vmap <C-C>	y
+
+autocmd BufRead,BufNewFile *.txt colo evening
+"au FileType txt colo evening
+au BufRead,BufNewFile *.c,*.cpp,*.cc,*.cxx,*.C colo morning|set ts=2 sw=2
+au SwapExists * let v:swapchoice = 'o'
+
+set nocompatible
+set backup
+set backupdir=~/.vim
+set history=50
+set ignorecase
+set smartcase
+set smartindent
+set hlsearch
+set incsearch
+set showmatch
+set textwidth=300
+set statusline=%F\ %m%h%r%=\ [FORMAT=%{&ff},%{&fenc}]\ [TYPE=%Y]\ [POS=%l,%v]\ [LEN=%L]\ [%p%%]
+"set statusline=%F\ %m%h%r%=\ [FORMAT=%{&ff},%{&fenc}]\ [TYPE=%Y]\ [BUF=%n/%{bufnr('$')}]\ [POS=%l,%v]\ [LEN=%L]\ [%p%%]
+"set paste
+
+ set rtp+=~/.vim/bundle/vundle/
+ call vundle#rc()
+
+ " let Vundle manage Vundle
+ " required! 
+ Bundle 'gmarik/vundle'
+
+ " My Bundles here:
+ "
+ " original repos on github
+ Bundle 'tpope/vim-fugitive'
+ Bundle 'Lokaltog/vim-easymotion'
+ Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+ Bundle 'tpope/vim-rails.git'
+ " vim-scripts repos
+" Bundle 'L9'
+" Bundle 'FuzzyFinder'
+ " non github repos
+ Bundle 'git://git.wincent.com/command-t.git'
+ Bundle 'vim-coffee-script'
+ Bundle 'surround.vim'
+ Bundle 'The-NERD-Commenter'
+
+" language en_US.UTF-8
+" let g:Powerline_symbols = 'compatible'
+ set laststatus=2
+ " ...
+
+ filetype off    " for vundle
+ filetype plugin indent on     " required!
+ "
+ " Brief help
+ " :BundleList          - list configured bundles
+ " :BundleInstall(!)    - install(update) bundles
+ " :BundleSearch(!) foo - search(or refresh cache first) for foo
+ " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+ "
+ " see :h vundle for more details or wiki for FAQ
+ " NOTE: comments after Bundle command are not allowed..
