@@ -12,3 +12,4 @@ checkpoint
 __pycache__
 *.swp
 *.swo
+nohup.out
