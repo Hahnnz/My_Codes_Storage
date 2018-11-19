@@ -76,7 +76,7 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
+# if [[ -n $ssh -XY_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
 #   export EDITOR='mvim'
@@ -85,8 +85,8 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
+# ssh -XY
+# export ssh -XY_KEY_PATH="~/.ssh -XY/rsa_id"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -113,12 +113,12 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64
 alias vnc_home="tightvncserver -geometry 1920x1080 :5"
 alias vnc_kill="tightvncserver -kill :5"
 
-alias inu-al="ssh USERNAME@alpha-server-address"
-alias inu-be="ssh USERNAME@beta-server-address"
-alias inu-chi="ssh USERNAME@chi-server-address"
-alias inu-del="ssh USERNAME@delta-server-address"
-alias inu-ga="ssh USERNAME@gamma-server-address"
-alias inu-eta="ssh USERNAME@eta-server-address"
+alias inu-al="ssh -XY USERNAME@alpha-server-address"
+alias inu-be="ssh -XY USERNAME@beta-server-address"
+alias inu-chi="ssh -XY USERNAME@chi-server-address"
+alias inu-del="ssh -XY USERNAME@delta-server-address"
+alias inu-ga="ssh -XY USERNAME@gamma-server-address"
+alias inu-eta="ssh -XY USERNAME@eta-server-address"
 
 alias inuftp-al="sftp USERNAME@alpha-server-address"
 alias inuftp-be="sftp USERNAME@beta-server-address"
