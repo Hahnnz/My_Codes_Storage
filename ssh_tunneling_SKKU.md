@@ -2,7 +2,7 @@
 
 ## Client [My PC]
 
-> $ ssh USERNAME@[SKKU-HPC Server Address] -p 22  -N -L 5001:xxx.xxx.xxx.11:5000 -L 5002:xxx.xxx.xxx.12:5000 -L 5003:xxx.xxx.xxx.13:5000 -L 5004:xxx.xxx.xxx.14:5000 -L 5005:xxx.xxx.xxx.15:5000 -L 5006:xxx.xxx.xxx.16:5000 -L 5007:xxx.xxx.xxx.17:5000 -L 5008:xxx.xxx.xxx.18:5000 -L 5009:xxx.xxx.xxx.19:5000 -L 5010:xxx.xxx.xxx.20:5000 -L 5011:xxx.xxx.xxx.21:5000 -L 5012:xxx.xxx.xxx.22:5000 -L 5014:xxx.xxx.xxx.24:5000 -L 5015:xxx.xxx.xxx.25:5000 -L 5016:xxx.xxx.xxx.26:5000
+> $ ssh USERNAME@[SKKU-HPC Server Address] -p 22 -f -N -L 5001:xxx.xxx.xxx.11:5000 -L 5002:xxx.xxx.xxx.12:5000 -L 5003:xxx.xxx.xxx.13:5000 -L 5004:xxx.xxx.xxx.14:5000 -L 5005:xxx.xxx.xxx.15:5000 -L 5006:xxx.xxx.xxx.16:5000 -L 5007:xxx.xxx.xxx.17:5000 -L 5008:xxx.xxx.xxx.18:5000 -L 5009:xxx.xxx.xxx.19:5000 -L 5010:xxx.xxx.xxx.20:5000 -L 5011:xxx.xxx.xxx.21:5000 -L 5012:xxx.xxx.xxx.22:5000 -L 5014:xxx.xxx.xxx.24:5000 -L 5015:xxx.xxx.xxx.25:5000 -L 5016:xxx.xxx.xxx.26:5000
 
 
 ## SKKU-HPC Hosts alias for \*sh(zshrc, bashrc, ...) profiles
