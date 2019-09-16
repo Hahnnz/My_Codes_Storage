@@ -1,29 +1,36 @@
 # Docker Documents
 
-* Environment : `Ubuntu 16.04 LTS`
-* GPU : `Titan X`
+* Environment : `Ubuntu 18.04`, `CentOS 7`
+* GPU : `Titan V`
 * Tensorflow version : `1.9.0` GPU version
-* CUDA : `9.0.176`
+* CUDA : `9.0.176`, `10.0`
 * Cudnn : `7.0.5`
 
 ## Docker Installation
+
+### 1. Ubuntu Installation
 Quick Installation command :
-> $ curl -fsSL https://get.docker.com/ | sudo sh
-
-
+```
+$ curl -fsSL https://get.docker.com/ | sudo sh
+```
 add nvidia-docker repository path and install nvidia-docker
+```
+$ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+$ distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+$ curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+$ sudo apt update
+$ sudo apt install -y nvidia-docker2
+```
+### 2. CentOS Installation
+```
+$ distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+$ curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.repo | sudo tee /etc/yum.repos.d/nvidia-docker.repo
 
-> $ curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+$ sudo yum install -y nvidia-container-toolkit
+$ sudo systemctl restart docker
+```
 
-> $ distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-
-> $ curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-
-> $ sudo apt update
-
-> $ sudo apt install -y nvidia-docker2
-
-
+### 3. Pulling Nvidia GPU docker image
 get ubuntu16-gpu-docker container with cudnn for 7.0, cuda for 9.0.<br>
 you can check available gpu container at [here](https://hub.docker.com/r/nvidia/cuda/tags/)
 
@@ -43,6 +50,18 @@ you can run your docker by the following command.
 > $ docker run -i -t [docker repo name] [shell type you want to use]
 
 > $ docker run -i -t nvidia\/cuda /bin/bash # Example
+
+## Usage
+```
+#### Test nvidia-smi with the latest official CUDA image
+$ docker run --gpus all nvidia/cuda:9.0-base nvidia-smi
+
+# Start a GPU enabled container on two GPUs
+$ docker run --gpus 2 nvidia/cuda:9.0-base nvidia-smi
+
+# Starting a GPU enabled container on specific GPUs
+$ docker run --gpus '"device=1,2"' nvidia/cuda:9.0-base nvidia-smi
+```
 
 ## How to check current working container?
 if you want to see all container, use `-a` option.
