@@ -21,7 +21,8 @@ $ jupyter labextension install jupyterlab-topbar-extension \
                                jupyterlab-logout \
                                jupyterlab-theme-toggle
 ```
-
+## 2. Theme
+$ jupyter labextension install @mohirio/jupyterlab-horizon-theme
 
 
 
