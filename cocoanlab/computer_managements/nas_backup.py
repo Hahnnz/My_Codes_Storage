@@ -19,8 +19,8 @@ import os  # Import os module for interacting with the operating system
 
 # main function
 if __name__ == "__main__":
-    nas_path = '/Volumes/cocoanlab02'  # Path where the NAS volume is mounted
-    das_path = '/Volumes/DAS_Cluster02'  # Path where the DAS cluster volume is mounted
+    nas_path = '/path/to/nas'  # Path where the NAS volume is mounted
+    das_path = '/path/to/das'  # Path where the DAS cluster volume is mounted
 
     # Create rsync output directory
     # Get today's date as a string in the format 'YYYY-MM-DD'
