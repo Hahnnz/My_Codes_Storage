@@ -38,6 +38,6 @@ if __name__ == "__main__":
         dst_path = os.path.join(das_path, dir_name)
 
         # Construct the rsync command
-        rsync_command = f'nohup rsync -rpuihv --rsh="/opt/homebrew/bin/sshpass -p {rsync_password} ssh -o StrictHostKeyChecking=no -p {rsync_port}" --partial --append --append-verify --size-only --delete -og {nas_id}@{nas_ip}:{src_path} {dst_path} 1>/dev/null 2>&1 &'
+        rsync_command = f'nohup rsync "ssh -o Compression=no" -rpuihv --rsh="/opt/homebrew/bin/sshpass -p {rsync_password} ssh -o StrictHostKeyChecking=no -p {rsync_port}" --partial --append --append-verify --size-only --delete -og {nas_id}@{nas_ip}:{src_path} {dst_path} 1>/dev/null 2>&1 &'
         _ = os.system(rsync_command)  # Execute the rsync command
         print(rsync_command)  # Print the rsync command to the console for verification
